@@ -41,6 +41,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)presentPanModal:(UIViewController<HWPanModalPresentable> *)viewControllerToPresent
              completion:(void (^ __nullable)(void))completion;
 
+- (void)presentPanModal:(UIViewController<HWPanModalPresentable> *)viewControllerToPresent interactiveTransition:(id<UIViewControllerInteractiveTransitioning>)interactiveTransition transition:(id)transition;
+
 @end
 
 NS_ASSUME_NONNULL_END

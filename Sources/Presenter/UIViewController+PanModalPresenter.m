@@ -39,6 +39,21 @@
     });
 }
 
+- (void)presentPanModal:(UIViewController<HWPanModalPresentable> *)viewControllerToPresent interactiveTransition:(id<UIViewControllerInteractiveTransitioning>)interactiveTransition transition:(id)transition{
+    HWPanModalPresentationDelegate *delegate = [HWPanModalPresentationDelegate new];
+    delegate.interactiveTransition = interactiveTransition;
+    delegate.transition = transition;
+    viewControllerToPresent.hw_panModalPresentationDelegate = delegate;
+    viewControllerToPresent.modalPresentationStyle = UIModalPresentationCustom;
+    viewControllerToPresent.modalPresentationCapturesStatusBarAppearance = YES;
+    viewControllerToPresent.transitioningDelegate = delegate;
+    // fix for iOS 8 issue: the present action will delay.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self presentViewController:viewControllerToPresent animated:YES completion:nil];
+    });
+}
+
+
 - (void)presentPanModal:(UIViewController <HWPanModalPresentable> *)viewControllerToPresent sourceView:(nullable UIView *)sourceView sourceRect:(CGRect)rect {
     [self presentPanModal:viewControllerToPresent sourceView:sourceView sourceRect:rect completion:nil];
 

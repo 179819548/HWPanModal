@@ -19,7 +19,7 @@
 @implementation HWPanModalPresentationDelegate
 
 - (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source {
-	return [[HWPanModalPresentationAnimator alloc] initWithTransitionStyle:TransitionStylePresentation interactiveMode:PanModalInteractiveModeNone];
+    return [[HWPanModalPresentationAnimator alloc] initWithTransitionStyle:TransitionStylePresentation interactiveMode:PanModalInteractiveModeNone];
 }
 
 - (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed {
@@ -38,6 +38,10 @@
 	UIPresentationController *controller = [[HWPanModalPresentationController alloc] initWithPresentedViewController:presented presentingViewController:presenting];
 	controller.delegate = self;
 	return controller;
+}
+
+- (nullable id <UIViewControllerInteractiveTransitioning>)interactionControllerForPresentation:(id <UIViewControllerAnimatedTransitioning>)animator {
+    return  self.interactiveTransition;
 }
 
 #pragma mark - UIAdaptivePresentationControllerDelegate

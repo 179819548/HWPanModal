@@ -23,6 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL interactive;
 @property (nonatomic, assign) PanModalInteractiveMode interactiveMode;
 @property (nonnull, nonatomic, strong, readonly) HWPanModalInteractiveAnimator *interactiveDismissalAnimator;
+@property (nonatomic, strong) id<UIViewControllerInteractiveTransitioning> interactiveTransition;
+@property (nonatomic, strong) id transition;
 
 @end
 
