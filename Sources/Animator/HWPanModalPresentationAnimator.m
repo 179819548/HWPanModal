@@ -149,7 +149,9 @@
 			offsetY += [presentable customIndicatorView] ? [presentable customIndicatorView].indicatorSize.height : 13;
 		}
 	}
-
+    [panView.layer removeAllAnimations];
+    [context.containerView.layer removeAllAnimations];
+    [toVC.view.layer removeAllAnimations];
 	[HWPanModalAnimator dismissAnimate:^{
 		[self dismissAnimationForPresentingVC:presentable];
 		panView.hw_top = (context.containerView.frame.size.height + offsetY);
