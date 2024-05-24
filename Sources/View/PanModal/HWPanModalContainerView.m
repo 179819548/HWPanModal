@@ -87,6 +87,25 @@
     }
 }
 
+- (void)willMoveToSuperview:(UIView *)newSuperview {
+	[super willMoveToSuperview:newSuperview];
+	if (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+		[self.superview removeObserver:self forKeyPath:@"frame"];
+		[newSuperview addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
+	}
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+	if (object == self.presentingView && [keyPath isEqualToString:@"frame"]) {
+		self.frame = self.presentingView.bounds;
+		[self setNeedsLayoutUpdate];
+		[self updateDragIndicatorViewFrame];
+		[self.contentView hw_panModalTransitionTo:self.contentView.hw_presentationState animated:NO];
+	} else {
+		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+	}
+}
+
 - (void)presentAnimationWillBegin {
     [[self presentable] panModalTransitionWillBegin];
     [self layoutBackgroundView];
@@ -251,33 +270,37 @@
 
 - (void)updateDragIndicatorView {
     if ([self.presentable showDragIndicator]) {
-        [self addDragIndicatorViewToView:self.panContainerView];
+        [self addDragIndicatorView];
     } else {
         self.dragIndicatorView.hidden = YES;
     }
 }
 
-- (void)addDragIndicatorViewToView:(UIView *)view {
+- (void)addDragIndicatorView {
     // if has been add, won't update it.
     self.dragIndicatorView.hidden = NO;
 
-    if (self.dragIndicatorView.superview == view) {
+    if (self.dragIndicatorView.superview == self.panContainerView) {
+		[self updateDragIndicatorViewFrame];
         [self.dragIndicatorView didChangeToState:HWIndicatorStateNormal];
         return;
     }
 
     self.handler.dragIndicatorView = self.dragIndicatorView;
-    [view addSubview:self.dragIndicatorView];
-    CGSize indicatorSize = [self.dragIndicatorView indicatorSize];
-
-    self.dragIndicatorView.frame = CGRectMake((view.hw_width - indicatorSize.width) / 2, -kIndicatorYOffset - indicatorSize.height, indicatorSize.width, indicatorSize.height);
+    [self.panContainerView addSubview:self.dragIndicatorView];
+	[self updateDragIndicatorViewFrame];
 
     [self.dragIndicatorView setupSubviews];
     [self.dragIndicatorView didChangeToState:HWIndicatorStateNormal];
 }
 
+- (void)updateDragIndicatorViewFrame {
+	CGSize indicatorSize = [self.dragIndicatorView indicatorSize];
+	self.dragIndicatorView.frame = CGRectMake((self.panContainerView.hw_width - indicatorSize.width) / 2, -kIndicatorYOffset - indicatorSize.height, indicatorSize.width, indicatorSize.height);
+}
+
 - (void)updateContainerViewShadow {
-    HWPanModalShadow shadow = [[self presentable] contentShadow];
+    HWPanModalShadow *shadow = [[self presentable] contentShadow];
     if (shadow.shadowColor) {
         [self.panContainerView updateShadow:shadow.shadowColor shadowRadius:shadow.shadowRadius shadowOffset:shadow.shadowOffset shadowOpacity:shadow.shadowOpacity];
     } else {

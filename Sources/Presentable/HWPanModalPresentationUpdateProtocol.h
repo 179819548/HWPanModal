@@ -58,6 +58,6 @@
 /**
  * call this method to dismiss your presented VC directly
  */
-- (void)hw_dismissAnimated:(BOOL)animated completion:(void (^)(void))completion NS_SWIFT_NAME(dismissAnimated(animated:completion:));
+- (void)hw_dismissAnimated:(BOOL)animated completion:(void (^)(void))completion NS_SWIFT_NAME(panModalDismissAnimated(animated:completion:));
 
 @end

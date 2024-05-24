@@ -30,16 +30,6 @@ Inspired by [**PanModal**](https://github.com/slackhq/PanModal), thanks.
 
 **My another project for pop controller:**[**HWPopController**](https://github.com/HeathWang/HWPopController)
 
-## Special Thanks
-
-Special Thanks to JetBrains! I use AppCode IDE to develop my open source project.
-<p style="align: left">
-    <a href="https://www.jetbrains.com/?from=HWPanModal">
-       <img src="images/icon_AppCode.png">
-    </a>
-</p>
-
-
 ## Snapshoot
 
 <div style="text-align: center">
