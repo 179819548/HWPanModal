@@ -415,6 +415,8 @@ typedef NS_ENUM(NSInteger, PresentingViewControllerAnimationStyle) {
  */
 - (void)panModalDidDismissed;
 
+- (CGFloat)panDismissMax;
+
 #pragma mark - DEPRECATED DECLARE
 
 /**

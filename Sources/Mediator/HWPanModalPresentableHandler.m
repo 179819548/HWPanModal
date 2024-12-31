@@ -272,23 +272,41 @@ static NSString *const kScrollViewKVOContentOffsetKey = @"contentOffset";
             [self handleDragDownState:currentState];
         }
     } else {
-        CGFloat position = [self nearestDistance:CGRectGetMinY(self.presentedView.frame) inDistances:@[@([self containerSize].height), @(self.shortFormYPosition), @(self.longFormYPosition), @(self.mediumFormYPosition)]];
-        if (HW_TWO_FLOAT_IS_EQUAL(position, self.longFormYPosition)) {
-            [self transitionToState:PresentationStateLong];
-            [self cancelInteractiveTransition];
-        } else if (HW_TWO_FLOAT_IS_EQUAL(position, self.mediumFormYPosition)) {
-            [self transitionToState:PresentationStateMedium];
-            [self cancelInteractiveTransition];
-        } else if (HW_TWO_FLOAT_IS_EQUAL(position, self.shortFormYPosition) || ![self.presentable allowsDragToDismiss]) {
-            [self transitionToState:PresentationStateShort];
-            [self cancelInteractiveTransition];
-        } else {
-            if ([self isBeingDismissed]) {
-                [self finishInteractiveTransition];
+        CGFloat maxPan = 0;
+        if ([self.presentable respondsToSelector:@selector(panDismissMax)]) {
+            maxPan = [self.presentable panDismissMax];
+        }
+        if (maxPan > 0) {
+            if (CGRectGetMinY(self.presentedView.frame) < maxPan) {
+                [self transitionToState:PresentationStateShort];
+                [self cancelInteractiveTransition];
             } else {
-                [self dismissPresentable:NO mode:PanModalInteractiveModeNone];
+                if ([self isBeingDismissed]) {
+                    [self finishInteractiveTransition];
+                } else {
+                    [self dismissPresentable:NO mode:PanModalInteractiveModeNone];
+                }
+            }
+        } else {
+            CGFloat position = [self nearestDistance:CGRectGetMinY(self.presentedView.frame) inDistances:@[@([self containerSize].height), @(self.shortFormYPosition), @(self.longFormYPosition), @(self.mediumFormYPosition)]];
+            if (HW_TWO_FLOAT_IS_EQUAL(position, self.longFormYPosition)) {
+                [self transitionToState:PresentationStateLong];
+                [self cancelInteractiveTransition];
+            } else if (HW_TWO_FLOAT_IS_EQUAL(position, self.mediumFormYPosition)) {
+                [self transitionToState:PresentationStateMedium];
+                [self cancelInteractiveTransition];
+            } else if (HW_TWO_FLOAT_IS_EQUAL(position, self.shortFormYPosition) || ![self.presentable allowsDragToDismiss]) {
+                [self transitionToState:PresentationStateShort];
+                [self cancelInteractiveTransition];
+            } else {
+                if ([self isBeingDismissed]) {
+                    [self finishInteractiveTransition];
+                } else {
+                    [self dismissPresentable:NO mode:PanModalInteractiveModeNone];
+                }
             }
         }
+
     }
 	[self.presentable didEndRespondToPanModalGestureRecognizer:panGestureRecognizer];
 }
